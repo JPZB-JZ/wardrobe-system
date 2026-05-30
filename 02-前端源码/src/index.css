@@ -1,0 +1,234 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* 默认柔粉紫主题 - 增加对比度 */
+    --color-surface: #f5f0f5;
+    --color-surface-card: rgba(255, 255, 255, 0.85);
+    --color-surface-high: rgba(196, 109, 156, 0.15);
+    --color-text: #1a1c1d;
+    --color-text-secondary: #6b5860;
+    --color-text-muted: #a08e96;
+    --color-pri: #c46d9c;
+    --color-pri-light: rgba(196, 109, 156, 0.12);
+    --color-pri-dim: #f4d4e4;
+    --color-sec: #8c7a3a;
+    --color-sec-light: rgba(140, 122, 58, 0.12);
+    --color-sec-dim: #e8d588;
+    --color-ter: #8e6dbf;
+    --color-ter-light: rgba(142, 109, 191, 0.12);
+    --color-ter-dim: #e4d8f2;
+  }
+
+  html { -webkit-tap-highlight-color: transparent; }
+  body {
+    @apply bg-surface font-sans text-text antialiased;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* ========== 科技蓝主题 - 玻璃拟态 + 科技蓝配色 ========== */
+  [data-theme="minimal"] {
+    /* 基础色板 - 暗一点的蓝灰背景 */
+    --color-surface: #e8ecf1 !important;
+    --color-surface-card: rgba(255, 255, 255, 0.9) !important;
+    --color-surface-high: rgba(0, 122, 255, 0.12) !important;
+    --color-text: #1a1a2e !important;
+    --color-text-secondary: #4a5568 !important;
+    --color-text-muted: #718096 !important;
+
+    /* 主色调 - 科技蓝 */
+    --color-pri: #007aff !important;
+    --color-pri-light: rgba(0, 122, 255, 0.15) !important;
+    --color-pri-dim: #5ac8fa !important;
+
+    /* 辅助色 - 科技紫 */
+    --color-sec: #5856d6 !important;
+    --color-sec-light: rgba(88, 86, 214, 0.15) !important;
+    --color-sec-dim: #af52de !important;
+
+    /* 强调色 - 科技绿 */
+    --color-ter: #34c759 !important;
+    --color-ter-light: rgba(52, 199, 89, 0.15) !important;
+    --color-ter-dim: #30d158 !important;
+  }
+
+  /* 科技蓝 - 玻璃拟态（保持原有设计，只改颜色） */
+  [data-theme="minimal"] .glass {
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(0, 122, 255, 0.15);
+    border-radius: 18px;
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    box-shadow:
+      0 8px 32px rgba(0, 122, 255, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  [data-theme="minimal"] .glass-heavy {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 122, 255, 0.2);
+    border-radius: 20px;
+    backdrop-filter: blur(30px) saturate(1.8);
+    -webkit-backdrop-filter: blur(30px) saturate(1.8);
+    box-shadow:
+      0 12px 40px rgba(0, 122, 255, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  /* 科技蓝 - 按钮 */
+  [data-theme="minimal"] .btn-pri {
+    background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
+    color: #ffffff;
+    border-radius: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
+    text-transform: none;
+    letter-spacing: -0.01em;
+    transition: all 0.2s ease;
+  }
+
+  [data-theme="minimal"] .btn-pri:hover {
+    background: linear-gradient(135deg, #0051d5 0%, #4ab8f0 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+  }
+
+  [data-theme="minimal"] .btn-pri:active {
+    transform: scale(0.97);
+  }
+
+  [data-theme="minimal"] .btn-sec {
+    background: rgba(0, 122, 255, 0.08);
+    color: #007aff;
+    border: 1px solid rgba(0, 122, 255, 0.2);
+    border-radius: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  [data-theme="minimal"] .btn-sec:hover {
+    background: rgba(0, 122, 255, 0.12);
+  }
+
+  [data-theme="minimal"] .btn-sec:active {
+    transform: scale(0.97);
+  }
+
+  /* 科技蓝 - 输入框 */
+  [data-theme="minimal"] .input-field {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 122, 255, 0.15);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+  }
+
+  [data-theme="minimal"] .input-field:focus {
+    border-color: #007aff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+  }
+
+  /* 科技蓝 - 导航栏（玻璃拟态） */
+  [data-theme="minimal"] header {
+    background: rgba(255, 255, 255, 0.72) !important;
+    border-bottom: 1px solid rgba(0, 122, 255, 0.1) !important;
+    backdrop-filter: blur(20px) saturate(1.8) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(1.8) !important;
+  }
+
+  /* 科技蓝 - 底部导航（玻璃拟态） */
+  [data-theme="minimal"] nav {
+    background: rgba(255, 255, 255, 0.82) !important;
+    border-top: 1px solid rgba(0, 122, 255, 0.1) !important;
+    backdrop-filter: blur(20px) saturate(1.8) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(1.8) !important;
+  }
+
+  /* 科技蓝 - 卡片圆角统一 */
+  [data-theme="minimal"] .glass[class*="rounded"] {
+    border-radius: 18px;
+  }
+
+  /* 科技蓝 - 评分环 */
+  [data-theme="minimal"] .score-ring__num {
+    color: #007aff;
+    font-weight: 700;
+  }
+
+  /* 科技蓝 - 标签圆角 */
+  [data-theme="minimal"] [class*="rounded-full"] {
+    border-radius: 12px;
+  }
+
+  /* 科技蓝 - 列表项 */
+  [data-theme="minimal"] button.flex.items-center.gap-3 {
+    border-radius: 14px;
+  }
+
+  /* 科技蓝 - 选中状态 */
+  [data-theme="minimal"] [class*="ring-2"] {
+    box-shadow: 0 0 0 2px #007aff;
+  }
+
+  /* 科技蓝 - 语音推荐按钮 */
+  [data-theme="minimal"] .voice-recommend-btn {
+    background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.35);
+  }
+
+  [data-theme="minimal"] .voice-recommend-btn:hover {
+    box-shadow: 0 12px 32px rgba(0, 122, 255, 0.45);
+  }
+}
+
+@layer components {
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(196, 109, 156, 0.2);
+    border-radius: 18px;
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    box-shadow:
+      0 8px 32px rgba(196, 109, 156, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+  .glass-heavy {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(196, 109, 156, 0.25);
+    border-radius: 20px;
+    backdrop-filter: blur(30px) saturate(1.6);
+    -webkit-backdrop-filter: blur(30px) saturate(1.6);
+    box-shadow:
+      0 12px 40px rgba(196, 109, 156, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+  .btn-pri {
+    @apply px-6 py-3 rounded-full font-bold text-white text-sm;
+    background: linear-gradient(135deg, #c46d9c, #8e6dbf);
+    box-shadow: 0 4px 16px rgba(196,109,156,0.25);
+  }
+  .btn-pri:active { transform: scale(0.96); }
+  .btn-sec {
+    @apply px-6 py-3 rounded-full font-bold text-sm border bg-pri-light;
+    color: var(--color-pri, #c46d9c);
+    border-color: rgba(196, 109, 156, 0.3);
+  }
+  .btn-sec:active { transform: scale(0.96); }
+  .score-ring {
+    @apply relative w-12 h-12 inline-flex items-center justify-center;
+  }
+  .score-ring svg { @apply w-full h-full; }
+  .score-ring__num {
+    @apply absolute text-xs font-extrabold text-ter;
+  }
+  .input-field {
+    @apply w-full px-3 py-2.5 rounded-xl border border-surface-high bg-white/70 text-sm outline-none;
+    transition: border-color 0.2s;
+  }
+  .input-field:focus {
+    @apply border-pri-dim;
+  }
+}
