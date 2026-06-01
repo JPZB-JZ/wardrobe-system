@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aura Style</string>
+    <string name="title_home">首页</string>
+    <string name="title_wardrobe">衣橱</string>
+    <string name="title_add">添加</string>
+    <string name="title_analysis">分析</string>
+    <string name="title_settings">设置</string>
+</resources>

@@ -206,13 +206,9 @@ export default function AddItemPage() {
   if (mode === 'choose') {
     return (
       <div className="min-h-screen bg-surface">
-        <header className="fixed top-0 left-0 right-0 h-14 z-50 flex items-center justify-between px-4 bg-white/75 border-b border-pri-light"
+        <header className="fixed top-0 left-0 right-0 h-14 z-50 flex items-center justify-center px-4 bg-white/75 border-b border-pri-light"
           style={{ backdropFilter: 'blur(20px)' }}>
-          <button onClick={() => navigate(-1)} className="w-10 h-10 flex items-center justify-center rounded-full text-text-secondary">
-            <ArrowLeft size={20} />
-          </button>
           <span className="text-lg font-extrabold text-pri">添加衣物</span>
-          <div className="w-10" />
         </header>
 
         <div className="pt-20 px-6 pb-8">

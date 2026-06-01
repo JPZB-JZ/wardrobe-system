@@ -32,7 +32,12 @@ async function callAi(
   if (!apiKey) return null
 
   try {
-    const resp = await fetch(`${providerConfig.baseUrl}/chat/completions`, {
+    // 使用 Vite 代理路径绕过 CORS
+    const apiUrl = provider === 'mimo' 
+      ? '/api/mimo/v1/chat/completions'  // 代理路径
+      : `${providerConfig.baseUrl}/chat/completions`
+    
+    const resp = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -215,13 +220,19 @@ export function getAvailableModels(config: AiConfig) {
   ]
 }
 
-// === TTS 语音合成 ===
+// === TTS 语音合成（MiMo V2.5 TTS - 使用 chat/completions 接口） ===
 export async function textToSpeech(text: string, config: AiConfig): Promise<string | null> {
-  const apiKey = await loadApiKey()
-  if (!apiKey) return null
-
   try {
-    const resp = await fetch('https://api.xiaomimimo.com/v1/audio/speech', {
+    const apiKey = await loadApiKey()
+    if (!apiKey) {
+      console.warn('[TTS] No API key available')
+      return null
+    }
+
+    console.log('[TTS] Calling MiMo TTS API...')
+
+    // 使用 Vite 代理绕过 CORS
+    const resp = await fetch('/api/mimo/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -229,25 +240,61 @@ export async function textToSpeech(text: string, config: AiConfig): Promise<stri
       },
       body: JSON.stringify({
         model: 'mimo-v2.5-tts',
-        input: text,
-        voice: 'zh-CN-XiaoxiaoNeural', // 中文女声
-        response_format: 'mp3'
+        messages: [
+          {
+            role: 'user',
+            content: '用温柔亲切的语气，像闺蜜一样给朋友推荐今天的穿搭。语速适中，自然亲切。'
+          },
+          {
+            role: 'assistant',
+            content: text  // 要朗读的文本放在 assistant 角色
+          }
+        ],
+        audio: {
+          format: 'wav',
+          voice: '冰糖'
+        }
       })
     })
-    
+
+    console.log('[TTS] Response status:', resp.status)
+
     if (!resp.ok) {
-      console.error('TTS API error:', resp.status, await resp.text())
+      const errorText = await resp.text()
+      console.error('[TTS] API error:', resp.status, errorText)
       return null
     }
+
+    const data = await resp.json()
+    console.log('[TTS] Response data:', data)
     
-    // 获取音频 blob
-    const blob = await resp.blob()
-    return URL.createObjectURL(blob)
+    const audioData = data?.choices?.[0]?.message?.audio?.data || data?.audio?.data
+    
+    if (audioData) {
+      console.log('[TTS] Got audio data, length:', audioData.length)
+      try {
+        const byteCharacters = atob(audioData)
+        const byteNumbers = new Uint8Array(byteCharacters.length)
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i)
+        }
+        const blob = new Blob([byteNumbers], { type: 'audio/wav' })
+        return URL.createObjectURL(blob)
+      } catch (e) {
+        console.error('[TTS] Base64 decode failed:', e)
+        return null
+      }
+    }
+    
+    console.warn('[TTS] No audio data in response')
+    return null
   } catch (e) {
-    console.error('TTS failed:', e)
+    console.error('[TTS] Failed:', e)
     return null
   }
 }
+
+
 
 // === 生成语音穿搭推荐 ===
 export async function generateVoiceRecommendation(

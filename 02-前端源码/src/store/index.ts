@@ -16,9 +16,16 @@ function loadItems(): ClothingItem[] {
   catch { return [] }
 }
 function saveItems(items: ClothingItem[]) {
-  // 保存时清除 image 字段（图片已存 IndexedDB）
-  const itemsWithoutImages = items.map(({ image, ...rest }) => rest)
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(itemsWithoutImages))
+  // 保存时：base64 图片清除（已存 IndexedDB），外部 URL 图片保留
+  const itemsToSave = items.map(item => {
+    const { image, ...rest } = item
+    // 保留外部 URL 图片（http 开头），清除 base64 图片
+    if (image && image.startsWith('http')) {
+      return { ...rest, image }
+    }
+    return rest
+  })
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(itemsToSave))
 }
 
 // 简单解密
@@ -58,6 +65,7 @@ interface WardrobeState {
   getWearHistory: (id: string) => Array<{ date: string; count: number }>
   wearOutfit: (items: ClothingItem[]) => void
   saveOutfit: (outfit: Outfit) => void
+  setOutfits: (outfits: Outfit[]) => void
   setAiConfig: (cfg: AiConfig) => void
   loadData: () => Promise<void>
   exportData: () => Promise<{ items: ClothingItem[]; images: Record<string, string> }>
@@ -203,6 +211,11 @@ export const useStore = create<WardrobeState>((set, get) => ({
     set({ outfits })
   },
 
+  setOutfits: (outfits) => {
+    localStorage.setItem(OUTFITS_KEY, JSON.stringify(outfits))
+    set({ outfits })
+  },
+
   setAiConfig: (cfg) => {
     localStorage.setItem(AI_CONFIG_KEY, JSON.stringify({ key: '', model: cfg.model }))
     set({ aiConfig: { key: cfg.key, model: cfg.model } })
@@ -216,13 +229,7 @@ export const useStore = create<WardrobeState>((set, get) => ({
     
     // 首次使用：加载预设数据
     if (items.length === 0) {
-      items = PRESET_ITEMS.map(item => ({ ...item, image: undefined })) // 图片单独存 IndexedDB
-      // 保存预设图片 URL 到内存缓存
-      for (const item of PRESET_ITEMS) {
-        if (item.image && item.image.startsWith('http')) {
-          imageCache.set(item.id, item.image)
-        }
-      }
+      items = PRESET_ITEMS
       saveItems(items)
     }
     
@@ -236,7 +243,13 @@ export const useStore = create<WardrobeState>((set, get) => ({
     // 加载所有图片到内存
     const images: Record<string, string> = {}
     for (const item of items) {
-      // 先检查内存缓存（预设图片 URL 在这里）
+      // 如果 item 自带图片 URL（预设衣物），直接使用
+      if (item.image && item.image.startsWith('http')) {
+        images[item.id] = item.image
+        imageCache.set(item.id, item.image)
+        continue
+      }
+      // 先检查内存缓存
       const cachedImage = imageCache.get(item.id)
       if (cachedImage) {
         images[item.id] = cachedImage
